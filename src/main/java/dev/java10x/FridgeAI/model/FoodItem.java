@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
-@Table(name = "food_items")
+@Table(name = "food_item")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -19,5 +21,8 @@ public class FoodItem {
     private Long id;
     private String nome;
     private Integer quantidade;
+    @Enumerated(EnumType.STRING)
+    private Category categoria;
+    private Date validade;
 
 }
