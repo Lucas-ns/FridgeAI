@@ -1,8 +1,10 @@
 package dev.java10x.FridgeAI.controller;
 
 
+import dev.java10x.FridgeAI.dto.FoodItemDTO;
 import dev.java10x.FridgeAI.model.FoodItem;
 import dev.java10x.FridgeAI.service.FoodItemService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,23 +21,27 @@ public class FoodItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FoodItem>> listar() {
+    public ResponseEntity<List<FoodItemDTO>> listar() {
         return ResponseEntity.ok(service.listar());
     }
 
     @PostMapping
-    public ResponseEntity<FoodItem> criar(@RequestBody FoodItem foodItem) {
+    public ResponseEntity<FoodItemDTO> criar(@RequestBody FoodItemDTO foodItem) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(foodItem));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody FoodItem foodItem) {
-        return ResponseEntity.ok(service.atualizar(id, foodItem));
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody FoodItemDTO foodItem) {
+        try {
+            return ResponseEntity.ok(service.atualizar(id, foodItem));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ingrediente não foi encontrado");
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
-        return ResponseEntity.ok("O alimento foi deletado.");
+        return ResponseEntity.noContent().build();
     }
 }
